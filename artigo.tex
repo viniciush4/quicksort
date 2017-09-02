@@ -1,0 +1,518 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+\author{Vinícius Berger}
+
+
+
+\begin{document}
+
+
+
+\begin{center}\textbf{
+\large ANÁLISE DE ALGORITMOS DE ORDENAÇÃO\\
+}
+\end{center}
+
+\begin{center}\textbf{
+\normalsize Vinícius Berger
+}
+\end{center}
+
+\begin{center}\textbf{
+\normalsize Universidade Federal do Espírito Santo
+}
+\end{center}
+
+
+
+
+
+\section*{Resumo}
+Os algoritmos de ordenação exercem um papel fundamental na área da computação. Existe uma variedade de algoritmos propostos na literatura atual com essa finalidade, de modo que estudar seus comportamentos, condições de melhor desempenho e seus tempos de execução se torna necessário para a identificação e implementação de algoritmos mais eficientes ou adequados a determinadas situações. Este trabalho apresenta um estudo comparativo baseado no tempo de execução de quatorze algoritmos de ordenação.
+
+
+
+
+\section{Introdução}
+
+Muitas aplicações computacionais exigem que os dados a serem manipulados estejam armazenados segundo um padrão, uma determinada ordem. Essas aplicações podem explorar a ordenação dos dados a fim de obter desempenho computacional mais elevado. Existem basicamente duas formas de se conseguir dados ordenados: inserindo-os ordenadamente na estrutura (quando a ordenação é garantida por construção) ou, a partir de um conjunto de dados desordenados, organizar seus elementos na ordem que se deseja.
+
+Este trabalho apresentará e analisará quatorze algoritmos de ordenação que podem ser empregados em aplicações computacionais, pois, devido à grande necessidade de ordenação de dados, como já mencionado, é interessante dispor de algoritmos eficientes (tanto em termos de espaço como de tempo) para essa finalidade. 
+
+Os algoritmos alvo de estudo são os seguintes: bubble, shake, insertion, shell, selection, rank, quick (tendo como elementos pivô o primeiro, o central, um randômico e a mediana de 3 elementos, os quais são o primeiro, o central e o último), merge, heap, radix e radix (binário).
+
+
+
+
+
+\subsection{Formulação do Problema}
+Cada algoritmo implementado deve ser capaz de resolver o seguinte problema: 
+
+\begin{itemize}
+\item Dada uma seqüência de números inteiros e a quantidade de números dessa seqüência, retornar os mesmos números ordenados de forma crescente.
+
+\end{itemize}
+
+
+
+\section{Metodologia}
+Inicialmente, foi criado um programa para geração automática de números, de acordo com a especificação do trabalho. Com ele é possível gerar tantos números quanto se queira em ordem crescente, decrescente ou aleatória. Este programa gera um número por linha e é útil para realizar os testes nos algoritmos de ordenação.
+
+Posteriormente foram implementados todos os algoritmos de ordenação mencionados na introdução deste trabalho. As implementações foram obtidas de diversos sites, sendo que apenas algumas precisaram ser ajustadas para atender aos objetivos propostos. Na seção referente a cada algoritmo serão apresentados os locais de onde foram obtidas as implementações.
+
+Cada algoritmo foi ajustado para receber como entrada uma sequência de números inteiros e o tamanho dessa sequência. A saída do algoritmo é a sequência ordenada de forma crescente. Não há regras quanto a utilização do espaço em disco. 
+
+Para a praticidade durante os testes, foi elaborado um makefile que compila o código, gera as entradas, testa todos os algoritmos e direciona a saída com o tempo de execução para uma pasta escolhida pelo usuário testador. O referido teste compreende uma execução de cada algoritmo com um determinado tamanho e um tipo de vetor (crescente, decrescente ou aleatório). Assim, pode-se executar o makefile tantas vezes quanto se queira, gerando relatórios de tempo de execução para diversas entradas e tamanhos.
+
+Os resultados das medições do tempo de execução serão apresentados em gráficos com tempo (em segundos) no eixo y e tamanho da instância no eixo x, para cada algoritmo. Além disso, será apresentado um gráfico geral comparando os tempos para uma instância determinada e três gráficos que comparam os algoritmos segundo o tipo de entrada.
+
+Os testes foram realizados em um computador emulando uma máquina virtual. As configurações do computador hospedeiro são:
+
+\begin{itemize}
+\item Processador: Intel® Pentium® Processador T4300 (1M Cache, 2.10 GHz, 800 MHz FSB)
+\item Memória: 4 GBytes
+\item Sistema operacional: Windows 7 – 64 bits
+\end{itemize}
+	
+
+A máquina virtual está configurada com o sistema operacional Linux Mint e tem disponível 3 GBytes de memória.
+
+Todos os algoritmos foram escritos na linguagem C. O software utilizado para edição do código foi o Gedit. Para a compilação foi utilizado o GCC.
+
+Os gráficos foram gerados utilizando o software Microsoft Excel 2007.
+
+Para análise do tempo de execução foi utilizado o comando “time” do terminal Linux. 
+
+
+
+
+
+
+
+
+\section{Resultados}
+Inicialmente, foram testados os quatorze métodos de ordenação com entradas crescente, decrescente e aleatória, contendo um milhão de elementos. Como se pode observar na tabela a seguir, oito dos algoritmos apresentam tempo de execução (em segundos) muito rápido para ambos os tipos de entrada, tanto que não é possível concluir muitas coisas sobre eles apenas observando o gráfico. A diferença realmente é muito grande comparada aos demais.
+
+ Dessa forma, os algoritmos Rank, Quick (C), Quick (R), Quick (M), Merge, Heap, Radix e Radix (B) serão testados com instâncias maiores (a fim de se obter mais informações sobre o comportamento destes) e serão considerados a partir de agora (apenas como convenção deste estudo) “algoritmos rápidos” sendo os demais “algoritmos lentos”.
+
+
+
+
+\begin{center}
+\begin{table}[!h]
+\centering
+\label{my-label}
+\begin{tabular}{llll}
+\hline
+          & ALEATÓRIO & CRESCENTE & DECRESCENTE \\ \hline
+Bubble    & 7767      & 1,58      & 8298        \\
+Shake     & 5853      & 1,22      & 8885        \\
+Insertion & 1970,1    & 1,5       & 3753        \\
+Shell     & 510,81    & 1,41      & 1208,35     \\
+Selection & 2166,01   & 2209,34   & 3026,16     \\
+Rank      & 1,54      & 1,55      & 1,73        \\
+Quick (P) & 1,73      & 2273,63   & 2414,08     \\
+Quick (C) & 2         & 1,66      & 1,64        \\
+Quick (R) & 8,04      & 7,16      & 7,89        \\
+Quick (M) & 1,6       & 1,32      & 1,64        \\
+Merge     & 2,46      & 2,13      & 2,66        \\
+Heap      & 2,34      & 1,62      & 1,8         \\
+Radix     & 1,52      & 1,89      & 2,19        \\
+Radix (B) & 1,87      & 2,05      & 2,51        \\ \hline
+\end{tabular}
+\end{table}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.56]{graficos/grafico1.jpg}\\
+\textit{Tabela e Gráfico 1: Tempo de execução (em segundos) de todos os algoritmos para sequências crescente, decrescente e aleatória de 1.000.000 elementos}
+\end{center}
+
+
+
+Ainda sobre o gráfico anterior se pode observar que dos algoritmos mais “lentos”, apenas dois deles não possuem um mecanismo que consegue identificar se a sequência fornecida já está ordenada: Selection e Quick (P). Nesse quesito eles conseguem ser piores do que os algoritmos Bubble, Shake, Insertion e Shell, que quando recebem uma sequência ordenada, economizam o tempo de processamento. 
+
+Como já era de se esperar, todos os “algoritmos lentos” apresentaram tempo de execução elevado nas entradas decrescentes, visto que é o pior caso. Por outro lado, algo chama a atenção nos valores da tabela: alguns dos algoritmos que são considerados mais “rápidos” apresentaram tempo superior nas entradas aleatórias. É o caso do Quick (C), Quick (R) e Heap. Como as diferenças são muito pequenas, será necessária uma análise com instâncias maiores, que será feita mais adiante.
+
+Nas próximas seções são apresentados os resultados de testes feitos com entradas de vários tamanhos (10.000 a 120.000) e vários tipos (crescente, decrescente e aleatório).
+
+
+
+
+
+
+\subsection{Entrada aleatória}
+O gráfico a seguir apresenta o resultado dos testes realizados com instâncias de até 120.000 elementos, sem nenhuma ordem. O eixo x representa os métodos, o eixo y os tempos (em segundos) e o eixo z os tamanhos da sequência. Observa-se uma grande diferença no tempo de execução entre os algoritmos. O Bubble é o algoritmo mais custoso para esse tipo de entrada, sendo inviável para entradas muito grandes. Atrás dele vêm, respectivamente e em sequência, Shake, Selection, Insertion e Shell. Os demais algoritmos conseguiram ordenar os dados em menos de um segundo e, portanto, não apresentam variações significativas (para este conjunto de entradas).
+
+
+
+\begin{center}
+\includegraphics[scale=0.38]{graficos/grafico2.jpg}
+\end{center}
+
+
+
+Conforme o gráfico podemos observar que:
+
+\begin{itemize}
+\item Dentre os “algoritmos lentos”, o Shell se mostrou a melhor opção, sendo o Bubble a pior escolha.
+\item Para pequenas quantidades de dados, até 20.000 elementos, por exemplo, qualquer um dos algoritmos pode ser usado, tendo em vista uma diferença irrisória entre eles.
+\item Dentre os “algoritmos rápidos” o Quick (R) é o que tem o pior tempo de execução (Já que estamos enquadrando o Quick (P) no conjunto dos algoritmos “lentos”).
+\end{itemize}
+
+
+
+
+
+
+
+\subsection{Entrada crescente}
+Para o melhor caso, quando a entrada já está totalmente ordenada, apenas dois algoritmos se mostraram ineficazes: Selection e Quick (P), ambos com tempo de execução muito parecido.
+
+
+
+
+
+\begin{center}
+\includegraphics[scale=0.38]{graficos/grafico3.jpg}
+\end{center}
+
+
+
+
+De acordo com o gráfico anterior:
+
+•	Os algoritmos Selection e Quick (P) não são aconselhados para ordenações onde os dados já estão em ordem crescente.
+
+
+
+
+
+
+\subsection{Entrada decrescente}
+O pior caso revelou um algoritmo com tempo de execução superior ao do Bubble (para este tipo de entrada): Shake. Conforme a quantidade de elementos aumenta, o algoritmo Shake distancia-se de seu predecessor e torna-se uma opção ainda mais inviável.
+
+
+
+
+
+\begin{center}
+\includegraphics[scale=0.38]{graficos/grafico4.jpg}
+\end{center}
+
+
+
+Conforme o gráfico anterior podemos observar que:
+\begin{itemize}
+\item Em contraste com a entrada aleatória, o Quick (P) não se mostra uma opção muito viável, tendo em vista que existem outros algoritmos que conseguem realizar a ordenação em tempo muito satisfatório.
+\item Para entradas ordenadas inversamente de até 120.000 elementos o Shell é o “algoritmo lento” mais eficiente.
+\item O pior algoritmo neste caso é o Shake.
+\end{itemize}
+
+
+
+
+
+
+\subsection{Bubble}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico5bubble.jpg}
+\end{center}
+
+É, sem dúvida, o método mais simples em termos de implementação. A idéia principal do algoritmo é percorrer o vetor (n – 1) vezes, e, a cada ciclo do loop levar o menor elemento da sequência para o início. 
+
+Apresentou os piores tempos de caso médio e chegou a gastar cerca de 160s para ordenar uma sequência decrescente de aproximadamente 120.000 elementos. Por outro lado, seu melhor caso é muito rápido devido ao teste para checar se a sequência já está ordenada, teste este que em uma única passagem percebe se a entrada já está em ordem crescente.
+
+Dessa forma, o Bubble é um dos algoritmos que não faz movimentações (trocas) nos casos em que a sequência já esteja ordenada, mas, por outro lado, percorre toda a sequência realizando comparações entre os elementos. Essa melhoria foi implementada no algoritmo a fim de melhorar o tempo de execução para sequências ordenadas.
+
+É possível verificar também que o Bubble não é recomendado para a ordenação de sequências com muitos elementos, uma vez que rapidamente ele atinge tempos impraticáveis. Sua vantagem é a facilidade de implementação e pouco necessidade de espaço em disco.
+
+Algumas vantagens são a fácil implementação e o fato de ser um algoritmo estável, ou seja, que não realiza trocas entre elementos iguais. A desvantagem é que apresenta ordem de complexidade quadrática, fazendo o tempo de execução subir absurdamente conforme se aumenta o tamanho da entrada.
+
+A implementação do algoritmo Bubble foi conseguida no livro “C, completo e total” de Herbert Schildt (ver Referências Bibliográficas).
+
+
+
+
+
+
+\subsection{Shake}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico6shake.jpg}
+\end{center}
+
+O Shake diferencia-se do Bubble pelo fato de ordenar em ambas as direções, a cada passagem pela sequência. Sua implementação é um pouco mais complexa do que o método anterior.
+
+Do resultado dos testes pode-se observar o seguinte:
+\begin{itemize}
+\item O caso médio é em média 1,85 vezes mais rápido do que o pior caso para todas as entradas.
+\item Segundo pior tempo de execução, para entradas decrescentes.
+\end{itemize}
+
+
+A implementação do algoritmo Shake foi conseguida em 
+
+$http://rosettacode.org/wiki/Sorting\_algorithms/Cocktail\_sort\#C.$
+
+
+
+
+
+\subsection{Insertion}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico7insertion.jpg}
+\end{center}
+
+Apresentou o terceiro pior tempo (menos para entradas crescentes), mas, no entanto, relativamente melhor que os dois anteriores, chegando a ter uma performance média 3,75 vezes melhor que a do Bubble, para o mesmo tamanho de entrada. 
+
+O desempenho do caso médio, apresentou-se cerca de 2 vezes melhor que a do pior caso para praticamente qualquer tamanho de entrada. 
+
+Tal como o Bubble, em uma única passagem o algoritmo termina, para o caso de uma sequência já ordenada. 
+
+Vantagens são a fácil implementação, estabilidade do algoritmo e favorecimento de execução para entradas já ordenadas. As desvantagens resumem-se ao número grande de movimentações, ordem de complexidade quadrática e ineficiência quando a sequência está ordenada inversamente. 
+
+A implementação do algoritmo Insertion foi conseguida no livro “C, completo e total” de Herbert Schildt (ver Referências Bibliográficas).
+
+
+
+
+
+
+\subsection{Shell}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico8shell.jpg}
+\end{center}
+
+É o mais eficiente entre os algoritmos com ordem de complexidade quadrática, apesar de ser um algoritmo não estável.
+
+O tempo de execução da entrada aleatória mostrou-se em média 1,9 vezes mais rápido do que a entrada decrescente para todas as entradas. 
+
+Mostra-se uma ótima opção para entradas de tamanho moderado, levando em consideração uma implementação simples, que requer uma quantidade pequena de código.
+
+A implementação do algoritmo Shell foi conseguida no livro “C, completo e total” de Herbert Schildt (ver Referências Bibliográficas).
+
+
+
+
+
+\subsection{Selection}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico9selection.jpg}
+\end{center}
+
+O método Selection funciona da seguinte maneira: seleciona o menor item da sequência e posteriormente permuta-o com a primeira posição do vetor. Isso será feito para todos os (n-1) elementos restantes e depois para os (n-2) elementos e assim sucessivamente até que reste um único elemento. 
+
+Observando os dados conseguidos no teste, observa-se que este algoritmo não possui um comportamento totalmente natural, pois como afirma Schildt (1996, p. 503) “[...] uma ordenação tem um comportamento natural se ela trabalha o mínimo quando a lista já está ordenada, trabalha mais quanto mais desordenada estiver a lista e o maior tempo quando a lista está em ordem inversa”. 
+
+Considerando que os tempos do caso médio e pior caso estão muito parecidos, o único fato que “naturaliza” o comportamento é que para a entrada decrescente houve um tempo de execução maior.  É possível também que a entrada aleatória esteja bastante ordenada, o que justificaria uma aproximação das curvas no gráfico.
+
+Vantagens inerentes ao código são a fácil implementação e a realização de um pequeno número de movimentações. As desvantagens resumem-se a ordem de complexidade quadrática, a não-estabilidade do algoritmo e o fato de que a entrada ordenada não influencia o tempo de execução. 
+
+A implementação do algoritmo Selection foi conseguida no livro “C, completo e total” de Herbert Schildt (ver Referências Bibliográficas).
+
+
+
+
+
+
+
+\subsection{Rank}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico10rank.jpg}
+\end{center}
+
+Esta versão do algoritmo Rank possui a característica de não utilizar comparação entre chaves. Entretanto, está limitado a funcionar com entradas de até um milhão de elementos. Somente nos testes é que sua capacidade foi aumentada a fim de verificar seu comportamento para grandes quantidades de dados.
+
+Do gráfico verifica-se que o caso médio apresentou-se um pouco mais custoso em termos de tempo do que tendo as sequências crescente ou decrescente como entrada, as quais se apresentaram com tempos muito semelhantes.
+
+
+
+
+
+
+
+\subsection{Quick}
+
+O método Quick fez jus ao seu nome, pois obteve ótimos resultados em todos os tipos e tamanhos de entradas, exceto na versão que utiliza o primeiro elemento como pivô. Neste trabalho foram implementadas quatro versões deste algoritmo, diferindo-se apenas na escolha dos pivôs: A versão tradicional, com pivô central (Quick (C)); uma versão onde o pivô é o primeiro elemento (Quick (P)); uma versão com pivô randômico (Quick (R)) e uma versão onde o pivô é a mediana entre o primeiro, o central e o último elemento.
+
+Em média o melhor resultado entre as quatro versões é do Quick tradicional (com pivô central), enquanto o Quick (P) ficou como a versão mais custosa.
+
+Uma observação é que a escolha correta do pivô é essencial para a garantia de eficiência do algoritmo, como será apresentado a seguir nas análises individuais de cada versão.
+
+As implementações dos quatro algoritmos Quick (P, C, R, M) são adaptações do algoritmo Quick (C) conseguido no livro “C, completo e total” de Herbert Schildt (ver Referências Bibliográficas).
+
+
+
+
+
+
+\subsubsection{Quick (P)}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico11quickp.jpg}
+\end{center}
+
+Assim como no caso do Selection, este algoritmo não apresenta um comportamento natural, observando a definição apresentada anteriormente (SCHILDT, 1996, p. 503).
+
+Mostra-se uma boa opção para ordenamento de pequenas entradas aleatórias, não chegando a 1 segundo para até 120.000 elementos, como mostra o gráfico. Já para entradas crescentes e decrescentes não se mostra vantajoso, com tempo similar para o pior e melhor caso. 
+
+Dentre os Quick’s se mostrou o pior em termos de tempo de execução.
+
+
+
+
+\subsubsection{Quick (C)}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico12quickc.jpg}
+\end{center}
+
+Para a versão tradicional, os casos ordenados e reversamente ordenados são, em sua maioria, os melhores casos, uma vez que o elemento médio corresponde à mediana do conjunto, o que acarreta em uma divisão perfeita da sequência em duas partes do mesmo tamanho.
+
+A boa performance desta versão não se limitou aos casos de vetor ordenado e reverso, mas também ao caso aleatório, tornando o Quick (C) o melhor dos quatro Quick implementados.
+
+
+
+
+
+
+\subsubsection{Quick (R)}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico13quickr.jpg}
+\end{center}
+
+Esta versão do Quick utiliza como pivô um elemento qualquer da sequência. Isso gera uma expectativa de que seus resultados estejam entre os do Quick (P), que é a pior opção, e do Quick (C), a melhor. 
+
+Como se pode observar no resultado anterior, essa expectativa é confirmada para este conjunto de entradas.
+
+Considerando que o pivô é escolhido randomicamente, é possível, mas pouco provável, que haja mais escolhas de pivô perto do início ou fim da sequência, o que acarretaria em uma diferença grande na performance. Por exemplo, nada impede de em uma execução do algoritmo as escolhas randômicas estejam mais concentradas no início da sequência, o que acarretaria em um comportamento semelhante ao do Quick (P), onde as entradas crescentes e decrescentes não são aconselhadas.
+
+
+
+
+
+
+\subsubsection{Quick (M)}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico14quickm.jpg}
+\end{center}
+
+Este algoritmo possui o elemento pivô como sendo a mediana entre três elementos: o primeiro, o central e o último. Dessa forma as divisões serão exatas se o primeiro elemento da sequência for menor que o central, e este por sua vez for menor que o último. Se isso acontecer para todos os sub-vetores resultantes da execução do método, o Quick (M) terá comportamento similar ao Quick (C). Caso o primeiro elemento da sequência seja maior que o central e menor que o último, ou maior que o último e menor que o central e isto se repetir para todos os sub-vetores seguintes, o comportamento do algoritmo será similar ao Quick (P).  
+
+O gráfico anterior evidencia que as entradas aleatórias exigiram um tempo de execução muito maior que as entradas crescentes e decrescentes. Assim, o Quick (M) não se mostra uma escolha boa para ordenação.
+
+
+
+
+
+
+\subsection{Merge}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico15merge.jpg}
+\end{center}
+
+É um algoritmo que utiliza a técnica de dividir para conquistar. Sua idéia básica é criar uma sequência ordenada a partir de duas outras também ordenadas. Para isso, ele divide a sequência original em pares de dados, ordena-as; depois as agrupa em sequências de quatro elementos, e assim por diante, até ter toda a sequência dividida em apenas duas partes.
+
+Para as instâncias ordenadas, reversas e aleatórias seu comportamento foi praticamente o mesmo, com pequenos acréscimos à medida que a quantidade de elementos aumenta.
+
+Comparando os resultados para entradas de 150.000.000 de elementos, verificamos que sua performance é aproximadamente 50\% inferior à do Quick (C) para a mesma entrada.  
+
+O algoritmo Merge foi conseguido no seguinte endereço:\\
+$http://www.ime.usp.br/~pf/algoritmos/aulas/mrgsrt.html$.
+
+
+
+
+
+
+
+
+\subsection{Heap}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico16heap.jpg}
+\end{center}
+\begin{itemize}
+\item Apresenta resultados semelhantes para entradas crescentes e decrescentes, para todos os tamanhos de entrada.
+\item A entrada aleatória é aproximadamente 1,7 vezes mais lenta que as demais, considerando os tamanhos de entrada utilizados nos testes.
+\item É um algoritmo não estável.
+\end{itemize}
+
+
+
+
+
+
+\subsection{Radix}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico17radix.jpg}
+\end{center}
+
+Esta versão do Radix não utiliza comparação entre chaves, de acordo com o exigido na especificação do trabalho, porém foi ajustada para trabalhar com um tamanho de entrada que possua no máximo 7 dígitos. Entretanto, para a realização dos testes foi feito um ajuste que permite-lhe ordenar até 150.000.000 de elementos.
+
+Vale ressaltar que este algoritmo utiliza muita memória, mais especificamente o dobro da quantidade de elementos de entrada, tendo em vista que ele aloca a mesma quantidade de espaço para ir inserindo ordenadamente os dados provenientes dos baldes.
+
+Do gráfico e da tabela se pode observar que os tempos são muito parecidos para todos os tipos de entradas e tamanhos e isso é válido tendo em vista a implementação do método.
+
+A implementação do Radix foi adaptada do algoritmo conseguido no seguinte endereço: $https://pt.wikipedia.org/wiki/Radix\_sort$
+
+
+
+
+
+
+
+
+\subsection{Radix (B)}
+\begin{center}
+\includegraphics[scale=0.4]{graficos/grafico18radixb.jpg}
+\end{center}
+
+Não utiliza comparação entre chaves, mas, como o método anterior, só funciona para tamanhos de entradas que convertidos para binário possuam no máximo 20 dígitos. Entretanto, para a realização dos testes foi feito um ajuste que permite-lhe ordenar até 150.000.000 de elementos.
+
+Verifica-se que em relação ao Radix, este método apresentou tempo de execução um pouco mais elevado para todas as entradas. Além disso, para qualquer tipo de entrada os tempos foram muito parecidos.
+
+A implementação do Radix (B) foi adaptada do algoritmo conseguido no seguinte endereço: $https://pt.wikipedia.org/wiki/Radix\_sort$
+
+
+
+
+
+
+
+\section{Conclusão}
+
+Este estudo apresentou quatorze métodos de ordenação interna, sendo que alguns deles utilizam comparação entre chaves e outros não. Foram apresentados os resultados de vários testes realizados objetivando a descoberta do tempo de execução de cada algoritmo, para então compará-los entre si. Após a observação e análise dos resultados obtidos, foram feitas algumas observações sobre cada método.
+
+O estudo dos métodos de ordenação evidenciou que uma correta escolha a respeito do algoritmo a ser utilizado pode beneficiar o programador com tempos de execução muito melhores. Viu-se que essa escolha será baseada em diversos fatores, como por exemplo a complexidade de implementação ou até mesmo o conjunto de entradas nas quais se pretende aplicar o algoritmo. Sendo assim, alguns são mais aconselhados que outros para determinadas situações.
+
+Uma ideia para se melhorar o desempenho é combinar métodos de ordenação. Por exemplo, é possível implementar um algoritmo baseado nos métodos Quick e Insertion onde ocorre a verificação do tamanho da sequência a ser ordenada. Caso esta seja grande e aleatória, aplica-se o Quick. Porém, se for pequena e parcialmente ordenada, usa-se o Insertion.
+
+Verifica-se também que métodos mais eficazes exigem uma implementação mais cuidadosa, havendo preocupação com a quantidade de comparações e trocas realizadas pelo algoritmo, pois são esses detalhes que aumentam a qualidade da ordenação.
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Bibliografia}
+CELES, Waldemar; CERQUEIRA, Renato; RANGEL, José Lucas. Introdução a estruturas de dados: com técnicas de programação em C. 11a triagem. Rio de Janeiro: Elsevier, 2004.
+
+SCHILDT, Herbert. C, completo e total. 3. Ed. São Paulo: Makron Books, 1996.
+
+ZIVIANI, Nivio. Projeto de algoritmos: com implementações em Pascal e C. 4ª ed. São Paulo: Pioneira, 1999.
+
+
+
+\end{document}
