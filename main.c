@@ -30,7 +30,7 @@ int main (int argc, char *argv[])
 	arq = fopen("output.csv","w");
 	
 	// Fazer de n até s
-	for(n;n<=s;n+a)
+	for(n;n<=s;n=n+a)
 	{
 		// Escreve o titulo da linha
 		fprintf(arq,"%d, ", n);
@@ -58,7 +58,7 @@ int main (int argc, char *argv[])
 		}
 		
 		// Quebra de linha
-		fprintf(arq,"/n");
+		fprintf(arq,"\n");
 	}
 	
 	// Fecha arquivo output
