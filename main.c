@@ -3,14 +3,20 @@
 #include <time.h>
 #include <unistd.h>
 
+// Assinaturas
 void preencherVetorAleatoriamente(int *vetor, int n);
 void imprimir(int *vetor, int n);
 void permutar(int *vetor, int i, int j);
-void quickrandom(int *vetor, int esquerda, int direita);
+void quicksort(int *A, int p, int r);
+int particionar(int *A, int p, int r);
+int particionarUsandoPivoAleatorio(int *A, int p, int r);
 
+// Contadores e semente
 unsigned long comparacoes = 0;
+unsigned long trocas = 0;
 int semente = 0;
 
+// Função principal
 int main (int argc, char *argv[])
 {
 	// Tamanho do problema
@@ -25,15 +31,18 @@ int main (int argc, char *argv[])
 	// Quantidade de repeticoes do mesmo tamanho
 	int m = atoi(argv[4]);
 	
+	// Vetor a ser ordenado
+	int vetor[n];
+	
 	// Abre arquivo output
 	FILE* arq; 
-	arq = fopen("output.csv","w");
+	arq = fopen("output.txt","w");
 	
-	// Fazer de n até s
+	// Fazer de n até s, incrementando n em a unidades
 	for(n;n<=s;n=n+a)
 	{
-		// Escreve o titulo da linha
-		fprintf(arq,"%d, ", n);
+		// Escreve o titulo da linha (tamanho)
+		fprintf(arq,"%d:", n);
 	
 		// Gera instancia de semente	
 		semente = time(NULL) % 428;
@@ -41,7 +50,8 @@ int main (int argc, char *argv[])
 		// Repete m vezes
 		for(int i=0;i<m;i++)
 		{	
-			// Zera o contador
+			// Zera os contadores
+			trocas=0;
 			comparacoes=0;
 		
 			// Vetor a ser ordenado
@@ -51,10 +61,10 @@ int main (int argc, char *argv[])
 			preencherVetorAleatoriamente(vetor, n);
 
 			// Ordena o vetor
-			quickrandom(vetor, 0, n-1);
-	
+			quicksort(vetor, 0, n-1);
+			
 			// Salva a quantidade de comparacoes
-			fprintf(arq,"%ld, ", comparacoes);
+			fprintf(arq,"%ld,", comparacoes);
 		}
 		
 		// Quebra de linha
@@ -68,6 +78,7 @@ int main (int argc, char *argv[])
 	return(EXIT_SUCCESS);
 }
 
+// Preenche um vetor dado com numeros int na faixa [0..n]
 void preencherVetorAleatoriamente(int *vetor, int n)
 {	
 	// Atualiza a semente
@@ -79,6 +90,7 @@ void preencherVetorAleatoriamente(int *vetor, int n)
 		vetor[i] = rand() % n;
 }
 
+// Imprime na tela um vetor de tam n
 void imprimir(int *vetor, int n)
 {
 	// Imprime cada elemento
@@ -87,6 +99,7 @@ void imprimir(int *vetor, int n)
 	printf("\n");
 }
 
+// Permuta os elementos de indice i e j num vetor dado
 void permutar(int *vetor, int i, int j)
 {
 	// Permuta dois elementos
@@ -94,43 +107,56 @@ void permutar(int *vetor, int i, int j)
 	vetor[i] = vetor[j];
 	vetor[j] = x;
 	
-	// Incrementa comparacoes
-	comparacoes++;
+	// Incrementa trocas
+	trocas++;
 }
 
-void quickrandom(int *vetor, int esquerda, int direita)
+// Ordena um vetor de indice inicial p e final r
+void quicksort(int *A, int p, int r)
 {
-	int i, j, pivo;
-	semente = semente+37;
-	srand(semente);
-    
-	i = esquerda;
-	j = direita;
-	pivo = vetor[rand() % (direita - esquerda + 1) + esquerda];
-	
-	while(i <= j)
+	if(p<=r)
 	{
-		while(vetor[i] < pivo && i < direita)
-		{
-			i++;
-		}
-		while(vetor[j] > pivo && j > esquerda)
-		{
-			j--;
-		}
-		if(i <= j)
-		{
-			permutar(vetor, i, j);
-			i++;
-			j--;
-		}
-	}
-	if(j > esquerda)
-	{
-		quickrandom(vetor, esquerda, j);
-	}
-	if(i < direita)
-	{
-		quickrandom(vetor,  i, direita);
+		int q = particionarUsandoPivoAleatorio(A, p, r);
+		quicksort(A, p, q-1);
+		quicksort(A, q+1, r);
 	}
 }
+
+// Particiona um vetor considerando o ultimo elemento pivô
+int particionar(int *A, int p, int r)
+{
+	int pivo = A[r];
+	int i = p-1;
+	
+	for(int j=p; j<=r-1; j++)
+	{
+		if(A[j] <= pivo)
+		{
+			// Incrementa comparacoes
+			comparacoes++;
+			
+			i=i+1;
+			permutar(A, i, j);
+		}
+	}
+	permutar(A, i+1, r);
+	return i+1;
+}
+
+// escolhe um pivô aleatório para evitar o pior caso do quicksort
+int particionarUsandoPivoAleatorio(int *A, int p, int r)
+{
+	// Atualiza a semente
+	semente = semente+43;
+	srand(semente);
+	
+	// seleciona um número entre r (inclusive) e p (inclusive)
+	int pivo_indice = (rand() % (r - p + 1)) + p;
+	
+	// faz a troca para colocar o pivô no r
+	permutar(A, pivo_indice, r);
+	
+	// chama a particionar
+	return particionar(A, p, r);
+}
+

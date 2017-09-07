@@ -11,4 +11,4 @@ documentacao:
 	pdflatex artigo.tex
 	
 executa:
-	./main 1000 1000 100000 1
+	./main 1000 1000 100000 100
