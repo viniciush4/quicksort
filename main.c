@@ -130,11 +130,11 @@ int particionar(int *A, int p, int r)
 	
 	for(int j=p; j<=r-1; j++)
 	{
+		// Incrementa comparacoes
+		comparacoes++;
+			
 		if(A[j] <= pivo)
 		{
-			// Incrementa comparacoes
-			comparacoes++;
-			
 			i=i+1;
 			permutar(A, i, j);
 		}
